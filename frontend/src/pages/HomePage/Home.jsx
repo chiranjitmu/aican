@@ -14,11 +14,7 @@ const Home = () => {
   const [createOpen, setCreateOpen] = useState(false);
 
   useEffect(() => {
-    const refs = [
-      classAnalyticsRef,
-      expenseAnalyticsRef,
-      createSectionRef,
-    ];
+    const refs = [classAnalyticsRef, expenseAnalyticsRef, createSectionRef];
 
     refs.forEach((ref) => {
       if (ref.current) {

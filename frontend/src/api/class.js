@@ -57,6 +57,20 @@ export const createClass = async (classData, navigate) => {
   }
 };
 
+
+export const updateClass = async (id, classData, navigate) => {
+  try {
+    const reqUrl = `${import.meta.env.VITE_BACKENDURL}/class/update/${id}`;
+    const token = JSON.parse(localStorage.getItem("token"));
+    axios.defaults.headers.common["Authorization"] = token;
+    const response = await axios.put(reqUrl, classData);
+    return response;
+  } catch (error) {
+    handleErrorResponse(error, navigate);
+  }
+};
+
+
 export const getClasses = async (page, navigate) => {
   try {
     const reqUrl = `${

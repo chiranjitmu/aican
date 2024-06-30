@@ -7,8 +7,9 @@ import { useNavigate } from "react-router-dom";
 import { deleteClasses, getClasses } from "../../api/class";
 import Chart from "react-apexcharts";
 import { getMaleAndFemaleAnalytics } from "../../api/student";
+import CreateDetails from "../CreateDetails/CreateDetails";
 
-const Analytics = ({ setOpen }) => {
+const ClassAnalytics = ({ editTrueProp }) => {
   const navigate = useNavigate();
   const [modal, setModal] = useState(false);
   const [data, setData] = useState([]);
@@ -16,6 +17,8 @@ const Analytics = ({ setOpen }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [graph, setGraph] = useState(false);
+  const [editData, setEditData] = useState([]);
+  const [editTrue, setEditTrue] = useState(editTrueProp);
   const [donutData, setDonutData] = useState({
     options: {
       labels: ["Male", "Female"],
@@ -29,6 +32,11 @@ const Analytics = ({ setOpen }) => {
     setData(result.data.classes);
     setCurrentPage(result.data.currentPage || 1);
     setTotalPages(result.data.totalPages);
+  };
+
+  const handleEdit = (i) => {
+    setEditData(data[i]);
+    setEditTrue(true);
   };
 
   const handleDelete = (id) => {
@@ -96,104 +104,125 @@ const Analytics = ({ setOpen }) => {
     setGraph(true);
   };
 
+  const handleToggleEdit = () => {
+    setEditTrue(false);
+    fetchData()
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
 
   return (
     <>
-      <div className="p-6 bg-gray-100 min-h-full">
-        <ToastContainer />
-        <h1 className="text-2xl font-semibold mb-4">Class Analytics</h1>
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white shadow-md rounded-lg">
-            <thead>
-              <tr className="bg-gray-200 text-left">
-                <th className="p-4">#</th>
-                <th className="p-4">ClassName</th>
-                <th className="p-4">Year</th>
-                <th className="p-4">Teacher</th>
-                <th className="p-4">Student Fees</th>
-                <th className="p-4">Student List</th>
-                <th className="p-4">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((item, index) => (
-                <tr key={item._id} className="border-t">
-                  <td className="p-4">{(currentPage - 1) * 5 + index + 1}</td>
-                  <td className="p-4">{item.className}</td>
-                  <td className="p-4">{item.year}</td>
-                  <td className="p-4">{item.teacher}</td>
-                  <td className="p-4">{item.studentFees}</td>
-                  <td className="p-4">{item.studentList}</td>
-                  <td className="p-4">
-                    <div className="flex space-x-5">
-                      <span
-                        onClick={() => handleEdit(item._id)}
-                        className="cursor-pointer text-blue-600"
-                      >
-                        <FiEdit />
-                      </span>
-                      <span
-                        onClick={() => handleDelete(item._id)}
-                        className="cursor-pointer text-red-600"
-                      >
-                        <RiDeleteBin6Fill />
-                      </span>
-                      <span
-                        className="text-green-700 cursor-pointer"
-                        onClick={() => handleShowGraph(item.className)}
-                      >
-                        Male & Female Graph
-                      </span>
-                    </div>
-                  </td>
+      {!editTrue ? (
+        <div className="p-6 bg-gray-100 min-h-full">
+          <ToastContainer />
+          <h1 className="text-2xl font-semibold mb-4">Class Analytics</h1>
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white shadow-md rounded-lg">
+              <thead>
+                <tr className="bg-gray-200 text-left">
+                  <th className="p-4">#</th>
+                  <th className="p-4">ClassName</th>
+                  <th className="p-4">Year</th>
+                  <th className="p-4">Teacher</th>
+                  <th className="p-4">Student Fees</th>
+                  <th className="p-4">Student List</th>
+                  <th className="p-4">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {data.map((item, index) => (
+                  <tr key={item._id} className="border-t">
+                    <td className="p-4">{(currentPage - 1) * 5 + index + 1}</td>
+                    <td className="p-4">{item.className}</td>
+                    <td className="p-4">{item.year}</td>
+                    <td className="p-4">{item.teacher}</td>
+                    <td className="p-4">{item.studentFees}</td>
+                    <td className="p-4">{item.studentList}</td>
+                    <td className="p-4">
+                      <div className="flex space-x-5">
+                        <span
+                          onClick={() => handleEdit(index)}
+                          className="cursor-pointer text-blue-600"
+                        >
+                          <FiEdit />
+                        </span>
+                        <span
+                          onClick={() => handleDelete(item._id)}
+                          className="cursor-pointer text-red-600"
+                        >
+                          <RiDeleteBin6Fill />
+                        </span>
+                        <span
+                          className="text-green-700 cursor-pointer"
+                          onClick={() => handleShowGraph(item.className)}
+                        >
+                          Male & Female Graph
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="flex justify-between mt-4">
+            <p className="text-sm text-gray-500">
+              Page {currentPage} of {totalPages}
+            </p>
+            <div>
+              <button
+                onClick={handlePrevPage}
+                disabled={currentPage === 1}
+                className={`px-3 py-1 mx-1 ${
+                  currentPage === 1
+                    ? "bg-gray-200 text-black"
+                    : "bg-blue-500 text-white"
+                } rounded-md focus:outline-none`}
+              >
+                {"<"}
+              </button>
+              <button
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages}
+                className={`px-3 py-1 mx-1 ${
+                  currentPage === totalPages
+                    ? "bg-gray-200 text-black"
+                    : "bg-blue-500 text-white"
+                } rounded-md focus:outline-none`}
+              >
+                {">"}
+              </button>
+            </div>
+          </div>
+          {graph && (
+            <div className="mt-2 flex justify-center">
+              <Chart
+                options={donutData.options}
+                series={donutData.series}
+                type="donut"
+                width="350"
+              />
+            </div>
+          )}
         </div>
-        <div className="flex justify-between mt-4">
-          <p className="text-sm text-gray-500">
-            Page {currentPage} of {totalPages}
+      ) : (
+        <>
+          <CreateDetails
+            editData={editData}
+            editTrue={editTrue}
+            formType="Class"
+          />
+          <p
+            className="flex ml-[45%] mt-5 text-red-500 font-bold text-xl cursor-pointer"
+            onClick={handleToggleEdit}
+          >
+            Back
           </p>
-          <div>
-            <button
-              onClick={handlePrevPage}
-              disabled={currentPage === 1}
-              className={`px-3 py-1 mx-1 ${
-                currentPage === 1
-                  ? "bg-gray-200 text-black"
-                  : "bg-blue-500 text-white"
-              } rounded-md focus:outline-none`}
-            >
-              {"<"}
-            </button>
-            <button
-              onClick={handleNextPage}
-              disabled={currentPage === totalPages}
-              className={`px-3 py-1 mx-1 ${
-                currentPage === totalPages
-                  ? "bg-gray-200 text-black"
-                  : "bg-blue-500 text-white"
-              } rounded-md focus:outline-none`}
-            >
-              {">"}
-            </button>
-          </div>
-        </div>
-        {graph && (
-          <div className="mt-4">
-            <Chart
-              options={donutData.options}
-              series={donutData.series}
-              type="donut"
-              width="380"
-            />
-          </div>
-        )}
-      </div>
+        </>
+      )}
       {modal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg">
@@ -219,4 +248,4 @@ const Analytics = ({ setOpen }) => {
   );
 };
 
-export default Analytics;
+export default ClassAnalytics;

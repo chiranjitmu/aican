@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { createClass } from "../../api/class";
+import React, { useEffect, useState } from "react";
+import { createClass, updateClass } from "../../api/class";
 import { useNavigate } from "react-router-dom";
 import { createStudent } from "../../api/student";
 import { createTeacher } from "../../api/teacher";
@@ -7,7 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import * as yup from "yup";
 
-const CreateDetails = ({ formType }) => {
+const CreateDetails = ({ formType, editTrue, editData }) => {
   const navigate = useNavigate();
 
   // Validation schemas for each form type
@@ -64,6 +64,17 @@ const CreateDetails = ({ formType }) => {
     assignedClass: "",
   });
 
+  useEffect(() => {
+    setClassFormData({
+      className: editData?.className || "",
+      year: editData?.year?.toString() || "",
+      teacher: editData?.teacher || "",
+      studentFees: editData?.studentFees?.toString() || "",
+      studentList: editData?.studentList?.toString() || "",
+    });
+    console.log(editData);
+  }, [editData]);
+
   // Handle input change for form fields
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -71,22 +82,19 @@ const CreateDetails = ({ formType }) => {
       case "Class":
         setClassFormData({
           ...classFormData,
-          [name]:
-            name === "year" || name === "studentFees" || name === "studentList"
-              ? parseInt(value, 10)
-              : value,
+          [name]: value,
         });
         break;
       case "Teacher":
         setTeacherFormData({
           ...teacherFormData,
-          [name]: name === "salary" ? parseInt(value, 10) : value,
+          [name]: value,
         });
         break;
       case "Student":
         setStudentFormData({
           ...studentFormData,
-          [name]: name === "feesPaid" ? parseInt(value, 10) : value,
+          [name]: value,
         });
         break;
       default:
@@ -109,63 +117,55 @@ const CreateDetails = ({ formType }) => {
       theme: "dark",
     };
 
-    let result;
+    switch (formType) {
+      case "Class":
+        await classSchema.validate(classFormData);
+        if (editTrue && editData?._id) {
+          await updateClass(editData._id, classFormData, navigate);
+          toast.success("Class updated successfully", toastOptions);
+        } else {
+          await createClass(classFormData, navigate);
+          toast.success("Class created successfully", toastOptions);
+        }
+        setClassFormData({
+          className: "",
+          year: "",
+          teacher: "",
+          studentFees: "",
+          studentList: "",
+        });
+        break;
 
-    try {
-      switch (formType) {
-        case "Class":
-          await classSchema.validate(classFormData);
-          result = await createClass(classFormData, navigate);
-          if (result) {
-            toast.success("Class created successfully", toastOptions);
-            setClassFormData({
-              className: "",
-              year: "",
-              teacher: "",
-              studentFees: "",
-              studentList: "",
-            });
-          }
-          break;
+      case "Teacher":
+        await teacherSchema.validate(teacherFormData);
+        await createTeacher(teacherFormData, navigate);
+        toast.success("Teacher created successfully", toastOptions);
+        setTeacherFormData({
+          name: "",
+          gender: "",
+          dob: "",
+          contact: "",
+          salary: "",
+          assignedClass: "",
+        });
+        break;
 
-        case "Teacher":
-          await teacherSchema.validate(teacherFormData);
-          result = await createTeacher(teacherFormData, navigate);
-          if (result) {
-            toast.success("Teacher created successfully", toastOptions);
-            setTeacherFormData({
-              name: "",
-              gender: "",
-              dob: "",
-              contact: "",
-              salary: "",
-              assignedClass: "",
-            });
-          }
-          break;
+      case "Student":
+        await studentSchema.validate(studentFormData);
+        await createStudent(studentFormData, navigate);
+        toast.success("Student created successfully", toastOptions);
+        setStudentFormData({
+          name: "",
+          gender: "",
+          dob: "",
+          contact: "",
+          feesPaid: "",
+          assignedClass: "",
+        });
+        break;
 
-        case "Student":
-          await studentSchema.validate(studentFormData);
-          result = await createStudent(studentFormData, navigate);
-          if (result) {
-            toast.success("Student created successfully", toastOptions);
-            setStudentFormData({
-              name: "",
-              gender: "",
-              dob: "",
-              contact: "",
-              feesPaid: "",
-              assignedClass: "",
-            });
-          }
-          break;
-
-        default:
-          break;
-      }
-    } catch (error) {
-        toast.error(error.message, toastOptions);
-        console.error("Validation Errors:", validationErrors);
+      default:
+        break;
     }
   };
 
@@ -239,6 +239,7 @@ const CreateDetails = ({ formType }) => {
               </div>
             </>
           )}
+
           {formType === "Teacher" && (
             <>
               <div className="mb-6">
@@ -279,7 +280,7 @@ const CreateDetails = ({ formType }) => {
               </div>
               <div className="mb-6">
                 <label className="block text-lg font-medium text-gray-700">
-                  Contact Details :
+                  Contact :
                 </label>
                 <input
                   type="text"
@@ -315,6 +316,7 @@ const CreateDetails = ({ formType }) => {
               </div>
             </>
           )}
+
           {formType === "Student" && (
             <>
               <div className="mb-6">
@@ -355,7 +357,7 @@ const CreateDetails = ({ formType }) => {
               </div>
               <div className="mb-6">
                 <label className="block text-lg font-medium text-gray-700">
-                  Contact Details :
+                  Contact :
                 </label>
                 <input
                   type="text"
@@ -391,12 +393,15 @@ const CreateDetails = ({ formType }) => {
               </div>
             </>
           )}
-          <button
-            type="submit"
-            className="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-indigo-600"
-          >
-            Create {formType}
-          </button>
+
+          <div className="text-center">
+            <button
+              type="submit"
+              className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
+            >
+              {editTrue ? "Update" : "Create"} {formType}
+            </button>
+          </div>
         </form>
       </section>
     </>

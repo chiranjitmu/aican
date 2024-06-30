@@ -83,6 +83,49 @@ const getClass = async (req, res) => {
   }
 };
 
+const updateClass = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { className, year, teacher, studentFees, studentList } = req.body;
+
+    await schema.validate(
+      {
+        className,
+        year,
+        teacher,
+        studentFees,
+        studentList,
+      },
+      { abortEarly: false }
+    );
+
+    const updatedClass = await Class.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          className,
+          year,
+          teacher,
+          studentFees,
+          studentList,
+        },
+      },
+      { new: true }
+    );
+
+    if (!updatedClass) {
+      return res.status(404).json({ errorMessage: "Class not found" });
+    }
+
+    res.status(200).json(updatedClass);
+  } catch (error) {
+    if (error.name === "ValidationError") {
+      return res.status(400).json({ errorMessage: "Validation Error" });
+    }
+    res.status(500).json({ errorMessage: error.message });
+  }
+};
+
 const deleteClass = async (req, res) => {
   try {
     const { Id } = req.params;
@@ -102,4 +145,5 @@ module.exports = {
   createClass,
   getClass,
   deleteClass,
+  updateClass
 };
