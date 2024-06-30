@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const ExpenseAnalytics = () => {
-  return (
-    <div>ExpenseAnalytics</div>
-  )
-}
+  return <div>ExpenseAnalytics</div>;
+};
 
-export default ExpenseAnalytics
+export default ExpenseAnalytics;

@@ -9,13 +9,11 @@ const schema = yup.object().shape({
   contact: yup.string().required(),
   feesPaid: yup.number().required(),
   assignedClass: yup.string().required(),
-  refUserID: yup.string().required(),
 });
 
 const createStudent = async (req, res) => {
   try {
-    const { name, gender, dob, contact, feesPaid, assignedClass, refUserID } =
-      req.body;
+    const { name, gender, dob, contact, feesPaid, assignedClass } = req.body;
 
     await schema.validate(
       {
@@ -25,7 +23,6 @@ const createStudent = async (req, res) => {
         contact,
         feesPaid,
         assignedClass,
-        refUserID,
       },
       { abortEarly: false }
     );
@@ -37,7 +34,6 @@ const createStudent = async (req, res) => {
       contact,
       feesPaid,
       assignedClass,
-      refUserID,
     });
 
     const savedStudent = await newStudent.save();
@@ -52,11 +48,10 @@ const createStudent = async (req, res) => {
 };
 
 const getMaleAndFemaleAnalytics = async (req, res) => {
-  const { userId, className } = req.params;
+  const { className } = req.params;
 
   try {
     const students = await Student.find({
-      refUserID: userId,
       assignedClass: className,
     });
 

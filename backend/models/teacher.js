@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const teacherSchema = new mongoose.Schema({
   name: {
@@ -25,10 +25,6 @@ const teacherSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  refUserID: {
-    type: String,
-    required: true,
-  }
 });
 
-module.exports = mongoose.model('Teacher', teacherSchema);
+module.exports = mongoose.model("Teacher", teacherSchema);

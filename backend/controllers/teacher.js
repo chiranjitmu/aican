@@ -9,12 +9,11 @@ const schema = yup.object().shape({
   contact: yup.string().required(),
   salary: yup.number().required(),
   assignedClass: yup.string().required(),
-  refUserID: yup.string().required(),
 });
 
 const createTeacher = async (req, res) => {
   try {
-    const { name, gender, dob, contact, salary, assignedClass, refUserID } =
+    const { name, gender, dob, contact, salary, assignedClass } =
       req.body;
 
     await schema.validate(
@@ -25,7 +24,6 @@ const createTeacher = async (req, res) => {
         contact,
         salary,
         assignedClass,
-        refUserID,
       },
       { abortEarly: false }
     );
@@ -37,7 +35,6 @@ const createTeacher = async (req, res) => {
       contact,
       salary,
       assignedClass,
-      refUserID,
     });
 
     const savedTeacher = await newTeacher.save();

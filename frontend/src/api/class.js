@@ -57,16 +57,17 @@ export const createClass = async (classData, navigate) => {
   }
 };
 
-export const getClasses = async (userId, page, navigate) => {
+export const getClasses = async (page, navigate) => {
   try {
-    const reqUrl = `${import.meta.env.VITE_BACKENDURL}/class/getanalytics/${userId}/${page}`;
+    const reqUrl = `${
+      import.meta.env.VITE_BACKENDURL
+    }/class/getanalytics/${page}`;
     const response = await axios.get(reqUrl);
     return response;
   } catch (error) {
     handleErrorResponse(error, navigate);
   }
 };
-
 
 export const deleteClasses = async (id, navigate) => {
   try {

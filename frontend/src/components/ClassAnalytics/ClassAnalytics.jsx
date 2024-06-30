@@ -20,13 +20,12 @@ const Analytics = ({ setOpen }) => {
     options: {
       labels: ["Male", "Female"],
     },
-    series: [0, 0], // Initial series data for Male and Female counts
+    series: [0, 0],
   });
 
   // Function to fetch classes with pagination
   const fetchData = async (page) => {
-    const userId = JSON.parse(localStorage.getItem("userId"));
-    const result = await getClasses(userId, page, navigate);
+    const result = await getClasses(page, navigate);
     setData(result.data.classes);
     setCurrentPage(result.data.currentPage || 1);
     setTotalPages(result.data.totalPages);
@@ -79,8 +78,7 @@ const Analytics = ({ setOpen }) => {
   };
 
   const handleShowGraph = async (className) => {
-    const userId = JSON.parse(localStorage.getItem("userId"));
-    const result = await getMaleAndFemaleAnalytics(userId, className, navigate);
+    const result = await getMaleAndFemaleAnalytics(className, navigate);
     const maleCount = result.data.maleCount;
     const femaleCount = result.data.femaleCount;
     const totalStudents = result.data.totalStudents;

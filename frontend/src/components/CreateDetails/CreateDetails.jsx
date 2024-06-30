@@ -17,27 +17,24 @@ const CreateDetails = ({ formType }) => {
     teacher: yup.string().required("Teacher Name is required"),
     studentFees: yup.number().required("Student Fees is required"),
     studentList: yup.number().required("Student List is required"),
-    refUserID: yup.string().required(),
   });
 
   const teacherSchema = yup.object().shape({
     name: yup.string().required("Name is required"),
     gender: yup.string().required("Gender is required"),
-    dob: yup.date().required("Date of Birth is required"),
+    dob: yup.string().required("Date of Birth is required"),
     contact: yup.string().required("Contact Details are required"),
     salary: yup.number().required("Salary is required"),
     assignedClass: yup.string().required("Assigned Class is required"),
-    refUserID: yup.string().required(),
   });
 
   const studentSchema = yup.object().shape({
     name: yup.string().required("Name is required"),
     gender: yup.string().required("Gender is required"),
-    dob: yup.date().required("Date of Birth is required"),
+    dob: yup.string().required("Date of Birth is required"),
     contact: yup.string().required("Contact Details are required"),
     feesPaid: yup.number().required("Fees Paid is required"),
     assignedClass: yup.string().required("Assigned Class is required"),
-    refUserID: yup.string().required(),
   });
 
   // State variables for form data
@@ -47,7 +44,6 @@ const CreateDetails = ({ formType }) => {
     teacher: "",
     studentFees: "",
     studentList: "",
-    refUserID: JSON.parse(localStorage.getItem("userId")),
   });
 
   const [teacherFormData, setTeacherFormData] = useState({
@@ -57,7 +53,6 @@ const CreateDetails = ({ formType }) => {
     contact: "",
     salary: "",
     assignedClass: "",
-    refUserID: JSON.parse(localStorage.getItem("userId")),
   });
 
   const [studentFormData, setStudentFormData] = useState({
@@ -67,7 +62,6 @@ const CreateDetails = ({ formType }) => {
     contact: "",
     feesPaid: "",
     assignedClass: "",
-    refUserID: JSON.parse(localStorage.getItem("userId")),
   });
 
   // Handle input change for form fields
@@ -130,7 +124,6 @@ const CreateDetails = ({ formType }) => {
               teacher: "",
               studentFees: "",
               studentList: "",
-              refUserID: JSON.parse(localStorage.getItem("userId")),
             });
           }
           break;
@@ -147,7 +140,6 @@ const CreateDetails = ({ formType }) => {
               contact: "",
               salary: "",
               assignedClass: "",
-              refUserID: JSON.parse(localStorage.getItem("userId")),
             });
           }
           break;
@@ -164,7 +156,6 @@ const CreateDetails = ({ formType }) => {
               contact: "",
               feesPaid: "",
               assignedClass: "",
-              refUserID: JSON.parse(localStorage.getItem("userId")),
             });
           }
           break;

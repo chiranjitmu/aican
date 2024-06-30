@@ -57,13 +57,13 @@ export const createStudent = async (studentData, navigate) => {
   }
 };
 
-export const getMaleAndFemaleAnalytics = async (userId, className, navigate) => {
+export const getMaleAndFemaleAnalytics = async (className, navigate) => {
   try {
     const reqUrl = `${
       import.meta.env.VITE_BACKENDURL
-    }/student/getmaleandfemale/${userId}/${className}`;
+    }/student/getmaleandfemale/${className}`;
     const response = await axios.get(reqUrl);
-    console.log(response)
+    console.log(response);
     return response;
   } catch (error) {
     handleErrorResponse(error, navigate);

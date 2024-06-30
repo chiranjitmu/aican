@@ -4,7 +4,7 @@ const classController = require("../controllers/class");
 const verifyToken = require("../middlewares/verifyAuth");
 
 router.post("/create", classController.createClass);
-router.get("/getanalytics/:userId/:page", classController.getClass);
+router.get("/getanalytics/:page", classController.getClass);
 router.delete("/delete/:Id", verifyToken, classController.deleteClass);
 
 module.exports = router;
