@@ -7,7 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import * as yup from "yup";
 
-const CreateDetails = ({ formType, editTrue, editData }) => {
+const CreateDetails = ({ formType, editTrue, editData, setEditTrue }) => {
   const navigate = useNavigate();
 
   // Validation schemas for each form type
@@ -72,7 +72,6 @@ const CreateDetails = ({ formType, editTrue, editData }) => {
       studentFees: editData?.studentFees?.toString() || "",
       studentList: editData?.studentList?.toString() || "",
     });
-    console.log(editData);
   }, [editData]);
 
   // Handle input change for form fields
@@ -123,9 +122,14 @@ const CreateDetails = ({ formType, editTrue, editData }) => {
         if (editTrue && editData?._id) {
           await updateClass(editData._id, classFormData, navigate);
           toast.success("Class updated successfully", toastOptions);
+          setTimeout(() => {
+            setEditTrue(false);
+          }, 2500);
         } else {
-          await createClass(classFormData, navigate);
-          toast.success("Class created successfully", toastOptions);
+          const result = await createClass(classFormData, navigate);
+          if (result) {
+            toast.success("Class created successfully", toastOptions);
+          }
         }
         setClassFormData({
           className: "",
@@ -138,8 +142,10 @@ const CreateDetails = ({ formType, editTrue, editData }) => {
 
       case "Teacher":
         await teacherSchema.validate(teacherFormData);
-        await createTeacher(teacherFormData, navigate);
-        toast.success("Teacher created successfully", toastOptions);
+        const result2 = await createTeacher(teacherFormData, navigate);
+        if(result2){
+          toast.success("Teacher created successfully", toastOptions);
+        }
         setTeacherFormData({
           name: "",
           gender: "",
@@ -152,8 +158,11 @@ const CreateDetails = ({ formType, editTrue, editData }) => {
 
       case "Student":
         await studentSchema.validate(studentFormData);
-        await createStudent(studentFormData, navigate);
-        toast.success("Student created successfully", toastOptions);
+        const result3 = await createStudent(studentFormData, navigate);
+        if(result3){
+          toast.success("Student created successfully", toastOptions);
+        }
+       
         setStudentFormData({
           name: "",
           gender: "",

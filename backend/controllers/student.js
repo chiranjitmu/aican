@@ -27,6 +27,16 @@ const createStudent = async (req, res) => {
       { abortEarly: false }
     );
 
+    // Check if the count of existing classes with the same className exceeds 60
+    const countLimit = await Student.countDocuments({
+      assignedClass,
+    });
+    if (countLimit > 60) {
+      return res
+        .status(400)
+        .json({ errorMessage: "Class limit exceeded (max 60)." });
+    }
+
     const newStudent = new Student({
       name,
       gender,

@@ -106,8 +106,12 @@ const ClassAnalytics = ({ editTrueProp }) => {
 
   const handleToggleEdit = () => {
     setEditTrue(false);
-    fetchData()
+    fetchData();
   };
+
+  useEffect(() => {
+    fetchData();
+  }, [editTrue]);
 
   useEffect(() => {
     fetchData();
@@ -213,6 +217,7 @@ const ClassAnalytics = ({ editTrueProp }) => {
           <CreateDetails
             editData={editData}
             editTrue={editTrue}
+            setEditTrue={setEditTrue}
             formType="Class"
           />
           <p
