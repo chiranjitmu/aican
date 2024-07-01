@@ -3,9 +3,10 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const authRoute = require("./routes/auth");
-const classRoute = require("./routes/class")
-const teacherRoute = require("./routes/teacher")
-const studentRoute = require("./routes/student")
+const classRoute = require("./routes/class");
+const teacherRoute = require("./routes/teacher");
+const studentRoute = require("./routes/student");
+const analyticsRoutes = require("./routes/analytics");
 
 const app = express();
 const PORT = process.env.PORT;
@@ -23,9 +24,10 @@ app.get("/health", (req, res) => {
 });
 
 app.use("/api/v1/auth", authRoute);
-app.use("/api/v1/class", classRoute)
-app.use("/api/v1/teacher", teacherRoute)
-app.use("/api/v1/student", studentRoute)
+app.use("/api/v1/class", classRoute);
+app.use("/api/v1/teacher", teacherRoute);
+app.use("/api/v1/student", studentRoute);
+app.use("/api/v1/analytics", analyticsRoutes);
 
 app.use((error, req, res, next) => {
   res.status(500).json({ errorMessage: "Something went wrong!" });
