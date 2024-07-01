@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { createClass, updateClass } from "../../api/class";
 import { useNavigate } from "react-router-dom";
 import { createStudent, updateStudent } from "../../api/student";
-import { createTeacher } from "../../api/teacher";
+import { createTeacher, updateTeacher } from "../../api/teacher";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import * as yup from "yup";

@@ -70,7 +70,6 @@ export const getMaleAndFemaleAnalytics = async (className, navigate) => {
   }
 };
 
-
 export const getStudent = async (page, navigate) => {
   try {
     const reqUrl = `${
@@ -94,7 +93,6 @@ export const deleteStudent = async (id, navigate) => {
     handleErrorResponse(error, navigate);
   }
 };
-
 
 export const updateStudent = async (id, studentData, navigate) => {
   try {

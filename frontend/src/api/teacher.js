@@ -56,3 +56,39 @@ export const createTeacher = async (teacherData, navigate) => {
     handleErrorResponse(error, navigate);
   }
 };
+
+export const getTeacher = async (page, navigate) => {
+  try {
+    const reqUrl = `${
+      import.meta.env.VITE_BACKENDURL
+    }/teacher/getanalytics/${page}`;
+    const response = await axios.get(reqUrl);
+    return response;
+  } catch (error) {
+    handleErrorResponse(error, navigate);
+  }
+};
+
+export const deleteTeacher = async (id, navigate) => {
+  try {
+    const reqUrl = `${import.meta.env.VITE_BACKENDURL}/teacher/delete/${id}`;
+    const token = JSON.parse(localStorage.getItem("token"));
+    axios.defaults.headers.common["Authorization"] = token;
+    const response = await axios.delete(reqUrl);
+    return response;
+  } catch (error) {
+    handleErrorResponse(error, navigate);
+  }
+};
+
+export const updateTeacher = async (id, teacherData, navigate) => {
+  try {
+    const reqUrl = `${import.meta.env.VITE_BACKENDURL}/teacher/update/${id}`;
+    const token = JSON.parse(localStorage.getItem("token"));
+    axios.defaults.headers.common["Authorization"] = token;
+    const response = await axios.put(reqUrl, teacherData);
+    return response;
+  } catch (error) {
+    handleErrorResponse(error, navigate);
+  }
+};
