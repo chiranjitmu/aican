@@ -69,3 +69,41 @@ export const getMaleAndFemaleAnalytics = async (className, navigate) => {
     handleErrorResponse(error, navigate);
   }
 };
+
+
+export const getStudent = async (page, navigate) => {
+  try {
+    const reqUrl = `${
+      import.meta.env.VITE_BACKENDURL
+    }/student/getanalytics/${page}`;
+    const response = await axios.get(reqUrl);
+    return response;
+  } catch (error) {
+    handleErrorResponse(error, navigate);
+  }
+};
+
+export const deleteStudent = async (id, navigate) => {
+  try {
+    const reqUrl = `${import.meta.env.VITE_BACKENDURL}/student/delete/${id}`;
+    const token = JSON.parse(localStorage.getItem("token"));
+    axios.defaults.headers.common["Authorization"] = token;
+    const response = await axios.delete(reqUrl);
+    return response;
+  } catch (error) {
+    handleErrorResponse(error, navigate);
+  }
+};
+
+
+export const updateStudent = async (id, studentData, navigate) => {
+  try {
+    const reqUrl = `${import.meta.env.VITE_BACKENDURL}/student/update/${id}`;
+    const token = JSON.parse(localStorage.getItem("token"));
+    axios.defaults.headers.common["Authorization"] = token;
+    const response = await axios.put(reqUrl, studentData);
+    return response;
+  } catch (error) {
+    handleErrorResponse(error, navigate);
+  }
+};

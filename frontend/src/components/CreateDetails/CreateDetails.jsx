@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { createClass, updateClass } from "../../api/class";
 import { useNavigate } from "react-router-dom";
-import { createStudent } from "../../api/student";
+import { createStudent, updateStudent } from "../../api/student";
 import { createTeacher } from "../../api/teacher";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -65,14 +65,42 @@ const CreateDetails = ({ formType, editTrue, editData, setEditTrue }) => {
   });
 
   useEffect(() => {
-    setClassFormData({
-      className: editData?.className || "",
-      year: editData?.year?.toString() || "",
-      teacher: editData?.teacher || "",
-      studentFees: editData?.studentFees?.toString() || "",
-      studentList: editData?.studentList?.toString() || "",
-    });
-  }, [editData]);
+    if (editTrue && editData) {
+      switch (formType) {
+        case "Class":
+          setClassFormData({
+            className: editData.className || "",
+            year: editData.year?.toString() || "",
+            teacher: editData.teacher || "",
+            studentFees: editData.studentFees?.toString() || "",
+            studentList: editData.studentList?.toString() || "",
+          });
+          break;
+        case "Teacher":
+          setTeacherFormData({
+            name: editData.name || "",
+            gender: editData.gender || "",
+            dob: editData.dob || "",
+            contact: editData.contact || "",
+            salary: editData.salary?.toString() || "",
+            assignedClass: editData.assignedClass || "",
+          });
+          break;
+        case "Student":
+          setStudentFormData({
+            name: editData.name || "",
+            gender: editData.gender || "",
+            dob: editData.dob || "",
+            contact: editData.contact || "",
+            feesPaid: editData.feesPaid?.toString() || "",
+            assignedClass: editData.assignedClass || "",
+          });
+          break;
+        default:
+          break;
+      }
+    }
+  }, [editData, formType]);
 
   // Handle input change for form fields
   const handleChange = (e) => {
@@ -142,35 +170,34 @@ const CreateDetails = ({ formType, editTrue, editData, setEditTrue }) => {
 
       case "Teacher":
         await teacherSchema.validate(teacherFormData);
-        const result2 = await createTeacher(teacherFormData, navigate);
-        if(result2){
-          toast.success("Teacher created successfully", toastOptions);
+        if (editTrue && editData?._id) {
+          await updateTeacher(editData._id, teacherFormData, navigate);
+          toast.success("Teacher updated successfully", toastOptions);
+          setTimeout(() => {
+            setEditTrue(false);
+          }, 2500);
+        } else {
+          const result2 = await createTeacher(teacherFormData, navigate);
+          if (result2) {
+            toast.success("Teacher created successfully", toastOptions);
+          }
         }
-        setTeacherFormData({
-          name: "",
-          gender: "",
-          dob: "",
-          contact: "",
-          salary: "",
-          assignedClass: "",
-        });
         break;
 
       case "Student":
         await studentSchema.validate(studentFormData);
-        const result3 = await createStudent(studentFormData, navigate);
-        if(result3){
-          toast.success("Student created successfully", toastOptions);
+        if (editTrue && editData?._id) {
+          await updateStudent(editData._id, studentFormData, navigate);
+          toast.success("Student updated successfully", toastOptions);
+          setTimeout(() => {
+            setEditTrue(false);
+          }, 2500);
+        } else {
+          const result3 = await createStudent(studentFormData, navigate);
+          if (result3) {
+            toast.success("Student created successfully", toastOptions);
+          }
         }
-       
-        setStudentFormData({
-          name: "",
-          gender: "",
-          dob: "",
-          contact: "",
-          feesPaid: "",
-          assignedClass: "",
-        });
         break;
 
       default:

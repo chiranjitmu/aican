@@ -4,32 +4,23 @@ import { RiDeleteBin6Fill } from "react-icons/ri";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
-import { deleteClasses, getClasses } from "../../api/class";
-import Chart from "react-apexcharts";
-import { getMaleAndFemaleAnalytics } from "../../api/student";
+import { deleteStudent, getStudent } from "../../api/student";
 import CreateDetails from "../CreateDetails/CreateDetails";
 
-const ClassAnalytics = () => {
+const StudentAnalytics = () => {
   const navigate = useNavigate();
   const [modal, setModal] = useState(false);
   const [data, setData] = useState([]);
   const [deleteId, setDeleteId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [graph, setGraph] = useState(false);
   const [editData, setEditData] = useState([]);
   const [editTrue, setEditTrue] = useState(false);
-  const [donutData, setDonutData] = useState({
-    options: {
-      labels: ["Male", "Female"],
-    },
-    series: [0, 0],
-  });
 
-  // Function to fetch classes with pagination
+  // Function to fetch students with pagination
   const fetchData = async (page) => {
-    const result = await getClasses(page, navigate);
-    setData(result.data.classes);
+    const result = await getStudent(page, navigate);
+    setData(result.data.student);
     setCurrentPage(result.data.currentPage || 1);
     setTotalPages(result.data.totalPages);
   };
@@ -45,7 +36,7 @@ const ClassAnalytics = () => {
   };
 
   const handleConfirmDelete = async () => {
-    const result = await deleteClasses(deleteId, navigate);
+    const result = await deleteStudent(deleteId, navigate);
     if (result) {
       setModal(false);
       toast.success("Deleted Successfully", {
@@ -85,25 +76,6 @@ const ClassAnalytics = () => {
     }
   };
 
-  const handleShowGraph = async (className) => {
-    const result = await getMaleAndFemaleAnalytics(className, navigate);
-    const maleCount = result.data.maleCount;
-    const femaleCount = result.data.femaleCount;
-    const totalStudents = result.data.totalStudents;
-
-    const malePercentage = (maleCount / totalStudents) * 100;
-    const femalePercentage = (femaleCount / totalStudents) * 100;
-
-    setDonutData({
-      options: {
-        labels: ["Male", "Female"],
-      },
-      series: [malePercentage, femalePercentage],
-    });
-
-    setGraph(true);
-  };
-
   const handleToggleEdit = () => {
     setEditTrue(false);
     fetchData();
@@ -122,17 +94,18 @@ const ClassAnalytics = () => {
       {!editTrue ? (
         <div className="p-6 bg-gray-100 min-h-full">
           <ToastContainer />
-          <h1 className="text-2xl font-semibold mb-4">Class Analytics</h1>
+          <h1 className="text-2xl font-semibold mb-4">Student Analytics</h1>
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white shadow-md rounded-lg">
               <thead>
                 <tr className="bg-gray-200 text-left">
                   <th className="p-4">#</th>
-                  <th className="p-4">ClassName</th>
-                  <th className="p-4">Year</th>
-                  <th className="p-4">Teacher</th>
-                  <th className="p-4">Student Fees</th>
-                  <th className="p-4">Student List</th>
+                  <th className="p-4">Name</th>
+                  <th className="p-4">Gender</th>
+                  <th className="p-4">Date of Birth</th>
+                  <th className="p-4">Contact</th>
+                  <th className="p-4">Fees Paid</th>
+                  <th className="p-4">Assigned Class</th>
                   <th className="p-4">Actions</th>
                 </tr>
               </thead>
@@ -140,11 +113,12 @@ const ClassAnalytics = () => {
                 {data.map((item, index) => (
                   <tr key={item._id} className="border-t">
                     <td className="p-4">{(currentPage - 1) * 5 + index + 1}</td>
-                    <td className="p-4">{item.className}</td>
-                    <td className="p-4">{item.year}</td>
-                    <td className="p-4">{item.teacher}</td>
-                    <td className="p-4">{item.studentFees}</td>
-                    <td className="p-4">{item.studentList}</td>
+                    <td className="p-4">{item.name}</td>
+                    <td className="p-4">{item.gender}</td>
+                    <td className="p-4">{item.dob}</td>
+                    <td className="p-4">{item.contact}</td>
+                    <td className="p-4">{item.feesPaid}</td>
+                    <td className="p-4">{item.assignedClass}</td>
                     <td className="p-4">
                       <div className="flex space-x-5">
                         <span
@@ -158,12 +132,6 @@ const ClassAnalytics = () => {
                           className="cursor-pointer text-red-600"
                         >
                           <RiDeleteBin6Fill />
-                        </span>
-                        <span
-                          className="text-green-700 cursor-pointer"
-                          onClick={() => handleShowGraph(item.className)}
-                        >
-                          Male & Female Graph
                         </span>
                       </div>
                     </td>
@@ -201,16 +169,6 @@ const ClassAnalytics = () => {
               </button>
             </div>
           </div>
-          {graph && (
-            <div className="mt-2 flex justify-center">
-              <Chart
-                options={donutData.options}
-                series={donutData.series}
-                type="donut"
-                width="350"
-              />
-            </div>
-          )}
         </div>
       ) : (
         <>
@@ -218,7 +176,7 @@ const ClassAnalytics = () => {
             editData={editData}
             editTrue={editTrue}
             setEditTrue={setEditTrue}
-            formType="Class"
+            formType="Student"
           />
           <p
             className="flex ml-[45%] mt-5 text-red-500 font-bold text-xl cursor-pointer"
@@ -253,4 +211,4 @@ const ClassAnalytics = () => {
   );
 };
 
-export default ClassAnalytics;
+export default StudentAnalytics;

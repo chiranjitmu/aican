@@ -4,17 +4,27 @@ import ClassAnalytics from "../../components/ClassAnalytics/ClassAnalytics";
 import ExpenseAnalytics from "../../components/ExpenseAnalytics/ExpenseAnalytics";
 import CreateDetails from "../../components/CreateDetails/CreateDetails";
 import { IoMdArrowDropdown } from "react-icons/io";
+import TeacherAnalytics from "../../components/TeacherAnalytics/TeacherAnalytics";
+import StudentAnalytics from "../../components/StudentAnalytics/StudentAnalytics";
 
 const Home = () => {
   const navigate = useNavigate();
   const classAnalyticsRef = useRef(null);
+  const teacherAnalyticsRef = useRef(null);
+  const studentAnalyticsRef = useRef(null);
   const expenseAnalyticsRef = useRef(null);
   const createSectionRef = useRef(null);
   const [open, setOpen] = useState("ClassAnalytics");
   const [createOpen, setCreateOpen] = useState(false);
 
   useEffect(() => {
-    const refs = [classAnalyticsRef, expenseAnalyticsRef, createSectionRef];
+    const refs = [
+      classAnalyticsRef,
+      expenseAnalyticsRef,
+      createSectionRef,
+      studentAnalyticsRef,
+      teacherAnalyticsRef,
+    ];
 
     refs.forEach((ref) => {
       if (ref.current) {
@@ -41,6 +51,12 @@ const Home = () => {
   switch (open) {
     case "ClassAnalytics":
       sectionContent = <ClassAnalytics />;
+      break;
+    case "TeacherAnalytics":
+      sectionContent = <TeacherAnalytics />;
+      break;
+    case "StudentAnalytics":
+      sectionContent = <StudentAnalytics />;
       break;
     case "ExpenseAnalytics":
       sectionContent = <ExpenseAnalytics />;
@@ -80,6 +96,22 @@ const Home = () => {
               onClick={() => setOpen("ClassAnalytics")}
             >
               Class Analytics
+            </li>
+            <li
+              ref={teacherAnalyticsRef}
+              id="TeacherAnalytics"
+              className="text-[#474444] font-semibold bg-white transition-shadow duration-1000 ease-in-out w-[70%] p-2 px-6 rounded-lg cursor-pointer"
+              onClick={() => setOpen("TeacherAnalytics")}
+            >
+              Teacher Analytics
+            </li>
+            <li
+              ref={studentAnalyticsRef}
+              id="StudentAnalytics"
+              className="text-[#474444] font-semibold bg-white transition-shadow duration-1000 ease-in-out w-[70%] p-2 px-6 rounded-lg cursor-pointer"
+              onClick={() => setOpen("StudentAnalytics")}
+            >
+              Student Analytics
             </li>
             <li
               ref={expenseAnalyticsRef}
